@@ -1,5 +1,6 @@
 "use client";
 
+import { getInitialBoardState } from "@/constants/initialBoard";
 import { boardReducer } from "@/reducers/boardReducer";
 import { Action, BoardState } from "@/types/board";
 import {
@@ -10,31 +11,37 @@ import {
   createContext,
 } from "react";
 
-const initialState: BoardState = {
-  columns: {},
-  tasks: {},
-  columnOrder: [],
-};
-
 type BoardContextType = {
   state: BoardState;
   dispatch: React.Dispatch<Action>;
 };
 
+const LOCAL_STORAGE_KEY = "kanban-board-state";
+
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
 
+const loadInitialState = (): BoardState => {
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch (err) {
+    console.warn("Failed to load board state from localStorage:", err);
+  }
+  return getInitialBoardState();
+};
+
 export const BoardProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(boardReducer, initialState, () => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("board");
-      return stored ? JSON.parse(stored) : initialState;
-    }
-    return initialState;
-  });
+  const [state, dispatch] = useReducer(
+    boardReducer,
+    undefined,
+    loadInitialState
+  );
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("board", JSON.stringify(state));
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+      console.warn("Failed to save board state to localStorage:", err);
     }
   }, [state]);
 
