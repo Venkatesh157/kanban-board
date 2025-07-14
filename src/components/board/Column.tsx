@@ -59,8 +59,13 @@ const Column = ({ column, tasks }: Props) => {
       </Flex>
 
       <VStack separator={<StackSeparator />}>
-        {tasks.map((task) => (
-          <TaskCard key={task.taskId} task={task} columnId={column.columnId} />
+        {tasks.map((task, index) => (
+          <TaskCard
+            key={task.taskId}
+            task={task}
+            columnId={column.columnId}
+            index={index}
+          />
         ))}
       </VStack>
 

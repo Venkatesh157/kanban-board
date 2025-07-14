@@ -1,6 +1,6 @@
 import { Input, Text } from "@chakra-ui/react";
 import BoardModal from "../ui/BoardModal";
-import { ReactNode, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { useBoardContext } from "@/context/BoardContext";
 import { v4 as uuidv4 } from "uuid";
 
@@ -20,13 +20,15 @@ const ColumnModal = ({
   const [columnName, setColumnName] = useState(intialName);
   const { dispatch } = useBoardContext();
 
+  const newColumnIdRef = useRef<string>(uuidv4());
+
   const handleSubmit = () => {
-    if (!columnName.trim()) return;
+    if (!columnName.trim() && mode !== "delete") return;
 
     if (mode === "add") {
       dispatch({
         type: "ADD_COLUMN",
-        payload: { columnId: uuidv4(), name: columnName },
+        payload: { columnId: newColumnIdRef.current, name: columnName },
       });
     } else if (mode === "rename" && columnId) {
       dispatch({

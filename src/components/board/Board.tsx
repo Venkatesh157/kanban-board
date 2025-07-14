@@ -4,12 +4,46 @@ import { Button, Flex } from "@chakra-ui/react";
 import React from "react";
 import Column from "./Column";
 import ColumnModal from "../modals/ColumnModal";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 
 function Board() {
-  const { state } = useBoardContext();
+  const { state, dispatch } = useBoardContext();
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) return;
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    if (destination.droppableId === source.droppableId) {
+      dispatch({
+        type: "REORDER_TASKS",
+        payload: {
+          columnId: source.droppableId,
+          sourceIndex: source.index,
+          destinationIndex: destination.index,
+        },
+      });
+    } else {
+      dispatch({
+        type: "MOVE_TASK",
+        payload: {
+          fromColumnId: source.droppableId,
+          toColumnId: destination.droppableId,
+          taskId: draggableId,
+          destinationIndex: destination.index,
+        },
+      });
+    }
+  };
 
   return (
-    <div>
+    <DragDropContext onDragEnd={onDragEnd}>
       <Flex mb={4}>
         <ColumnModal
           mode="add"
@@ -29,10 +63,19 @@ function Board() {
         {state.columnOrder.map((columnId) => {
           const column = state.columns[columnId];
           const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
-          return <Column key={columnId} column={column} tasks={tasks} />;
+          return (
+            <Droppable droppableId={columnId} key={columnId}>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <Column key={columnId} column={column} tasks={tasks} />;
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          );
         })}
       </Flex>
-    </div>
+    </DragDropContext>
   );
 }
 

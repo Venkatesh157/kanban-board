@@ -40,7 +40,7 @@ export type DeleteCommentPayload = { taskId: string; commentId: string };
 
 export type MoveTaskPayload = {
   fromColumnId: string;
-  toColumId: string;
+  toColumnId: string;
   taskId: string;
   destinationIndex: number;
 };

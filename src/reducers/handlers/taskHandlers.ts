@@ -75,10 +75,10 @@ const handleMoveTask = (
   state: BoardState,
   payload: MoveTaskPayload
 ): BoardState => {
-  const { fromColumnId, toColumId, taskId, destinationIndex } = payload;
+  const { fromColumnId, toColumnId, taskId, destinationIndex } = payload;
 
   const sourceIds = [...state.columns[fromColumnId].taskIds];
-  const destinationIds = [...state.columns[toColumId].taskIds];
+  const destinationIds = [...state.columns[toColumnId].taskIds];
   const taskIndex = sourceIds.indexOf(taskId);
 
   sourceIds.splice(taskIndex, 1);
@@ -92,8 +92,8 @@ const handleMoveTask = (
         ...state.columns[fromColumnId],
         taskIds: sourceIds,
       },
-      [toColumId]: {
-        ...state.columns[toColumId],
+      [toColumnId]: {
+        ...state.columns[toColumnId],
         taskIds: destinationIds,
       },
     },
