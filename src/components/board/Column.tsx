@@ -6,7 +6,7 @@ import {
   StackSeparator,
   Flex,
   Button,
-  Icon,
+  IconButton,
 } from "@chakra-ui/react";
 import React from "react";
 import TaskCard from "./TaskCard";
@@ -16,6 +16,8 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { useBoardContext } from "@/context/BoardContext";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useColorModeValue } from "../ui/color-mode";
+import { Tooltip } from "../ui/tooltip";
 
 type Props = {
   column: ColumnType;
@@ -38,64 +40,113 @@ const Column = ({ column, tasks }: Props) => {
       payload: { sourceIndex, destinationIndex },
     });
   };
+
+  const bgColor = useColorModeValue("gray.50", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+
   return (
     <Box
-      w="300px"
-      bg="gray.50"
+      w={["100%", "320px"]}
+      bg={bgColor}
       borderRadius="lg"
+      tabIndex={0}
+      border="1px solid"
+      borderColor={borderColor}
       p={4}
       shadow="md"
       minH="600px"
+      role="region"
+      aria-labelledby={`column-${column.columnId}`}
+      _focus={{
+        outline: "2px solid",
+        outlineColor: "blue.300",
+        outlineOffset: "4px",
+      }}
+      display="flex"
+      flexDirection="column"
     >
       <Flex justify="space-between" align="center" mb={4}>
-        <Heading size="md">{column.name}</Heading>
-        <Flex gap={1}>
+        <Heading
+          id={`column-${column.columnId}`}
+          size="md"
+          fontWeight="semibold"
+        >
+          {column.name}
+        </Heading>
+        <Flex gap={1} align="center">
           {canMoveLeft && (
-            <Button
-              size="xs"
-              onClick={() => moveColumn("left")}
-              aria-label="Move Column Left"
-            >
-              <FaArrowLeft />
-            </Button>
+            <Tooltip content="Move column left" aria-label="Move left">
+              <IconButton
+                size="sm"
+                aria-label="Move column left"
+                onClick={() => moveColumn("left")}
+                variant="ghost"
+              >
+                <FaArrowLeft />
+              </IconButton>
+            </Tooltip>
           )}
           {canMoveRight && (
-            <Button
-              size="xs"
-              onClick={() => moveColumn("right")}
-              aria-label="Move Column Right"
-            >
-              <FaArrowRight />
-            </Button>
+            <Tooltip content="Move column Right" aria-label="Move Right">
+              <IconButton
+                size="sm"
+                aria-label="Move column Right"
+                onClick={() => moveColumn("right")}
+                variant="ghost"
+              >
+                <FaArrowRight />
+              </IconButton>
+            </Tooltip>
           )}
-          <ColumnModal
-            mode="rename"
-            columnId={column.columnId}
-            intialName={column.name}
-            triggerLabel={() => {
-              return (
-                <Icon size="lg" color="tomato">
-                  <FiEdit />
-                </Icon>
-              );
-            }}
-          />
-          <ColumnModal
-            mode="delete"
-            columnId={column.columnId}
-            intialName={column.name}
-            triggerLabel={() => {
-              return (
-                <Icon size="lg" color="tomato">
-                  <MdDelete />
-                </Icon>
-              );
-            }}
-          />
+          <Tooltip content="Rename column">
+            <ColumnModal
+              mode="rename"
+              columnId={column.columnId}
+              intialName={column.name}
+              triggerLabel={() => {
+                return (
+                  <IconButton
+                    aria-label="Rename column"
+                    size="sm"
+                    variant="ghost"
+                    color="tomato"
+                  >
+                    <FiEdit />
+                  </IconButton>
+                );
+              }}
+            />
+          </Tooltip>
+          <Tooltip content="Delete column">
+            <ColumnModal
+              mode="delete"
+              columnId={column.columnId}
+              intialName={column.name}
+              triggerLabel={() => {
+                return (
+                  <IconButton
+                    aria-label="Delete column"
+                    size="sm"
+                    variant="ghost"
+                    colorScheme="red"
+                  >
+                    <MdDelete />
+                  </IconButton>
+                );
+              }}
+            />
+          </Tooltip>
         </Flex>
       </Flex>
-
-      <VStack separator={<StackSeparator />}>
+      <VStack
+        separator={<StackSeparator />}
+        gap={3}
+        align="stretch"
+        role="list"
+        aria-label={`Tasks in ${column.name}`}
+        flex="1"
+        overflowY="auto"
+      >
         {tasks.map((task, index) => (
           <TaskCard
             key={task.taskId}
@@ -105,13 +156,21 @@ const Column = ({ column, tasks }: Props) => {
           />
         ))}
       </VStack>
-
       <Box mt={4}>
         <TaskModal
           columnId={column.columnId}
           mode="add"
           triggerLabel={() => {
-            return <Button>Add Task</Button>;
+            return (
+              <Button
+                width="100%"
+                size="sm"
+                colorScheme="blue"
+                aria-label="Add task"
+              >
+                Add Task
+              </Button>
+            );
           }}
         />
       </Box>
