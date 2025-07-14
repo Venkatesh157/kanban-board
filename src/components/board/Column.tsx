@@ -13,6 +13,7 @@ import TaskCard from "./TaskCard";
 import ColumnModal from "../modals/ColumnModal";
 import TaskModal from "../modals/TaskModal";
 import { FiEdit } from "react-icons/fi";
+import { MdDelete } from "react-icons/md";
 
 type Props = {
   column: ColumnType;
@@ -27,7 +28,7 @@ const Column = ({ column, tasks }: Props) => {
       borderRadius="lg"
       p={4}
       shadow="md"
-      minH="300px"
+      minH="600px"
     >
       <Flex justify="space-between" align="center" mb={4}>
         <Heading size="md">{column.name}</Heading>
@@ -39,6 +40,18 @@ const Column = ({ column, tasks }: Props) => {
             return (
               <Icon size="lg" color="tomato">
                 <FiEdit />
+              </Icon>
+            );
+          }}
+        />
+        <ColumnModal
+          mode="delete"
+          columnId={column.columnId}
+          intialName={column.name}
+          triggerLabel={() => {
+            return (
+              <Icon size="lg" color="tomato">
+                <MdDelete />
               </Icon>
             );
           }}
