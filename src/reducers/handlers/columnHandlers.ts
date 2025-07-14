@@ -3,6 +3,7 @@ import {
   BoardState,
   RemoveColumnPayload,
   RenameColumnPayload,
+  ReorderColumnPayload,
 } from "@/types/board";
 
 const handleAddColumn = (
@@ -70,4 +71,25 @@ const handleRemoveColumn = (
   };
 };
 
-export { handleAddColumn, handleRenameColumn, handleRemoveColumn };
+const handleReorderColumns = (
+  state: BoardState,
+  payload: ReorderColumnPayload
+) => {
+  const { sourceIndex, destinationIndex } = payload;
+
+  const newOrder = Array.from(state.columnOrder);
+  const [moved] = newOrder.splice(sourceIndex, 1);
+  newOrder.splice(destinationIndex, 0, moved);
+
+  return {
+    ...state,
+    columnOrder: newOrder,
+  };
+};
+
+export {
+  handleAddColumn,
+  handleRenameColumn,
+  handleRemoveColumn,
+  handleReorderColumns,
+};

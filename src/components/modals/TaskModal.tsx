@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useState } from "react";
 import BoardModal from "../ui/BoardModal";
 import { Task } from "@/types/board";
 import { v4 as uuidv4 } from "uuid";
@@ -33,13 +33,12 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
   const [editCommentId, setEditCommentId] = useState<string | null>(null);
   const [editedCommentText, setEditedCommentText] = useState("");
 
-  const newTaskIdRef = useRef(uuidv4());
-
   const handleSubmit = () => {
+    const newTaskId = uuidv4();
     if (!title.trim()) return;
 
     const newTask: Task = {
-      taskId: isEdit && task ? task.taskId : newTaskIdRef.current,
+      taskId: isEdit && task ? task.taskId : newTaskId,
       title,
       description,
       comments: task?.comments || [],

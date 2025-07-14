@@ -25,6 +25,10 @@ export interface BoardState {
 export type AddColumnPayload = { columnId: string; name: string };
 export type RenameColumnPayload = { columnId: string; text: string };
 export type RemoveColumnPayload = { columnId: string };
+export type ReorderColumnPayload = {
+  sourceIndex: number;
+  destinationIndex: number;
+};
 
 export type AddTaskPayload = { columnId: string; task: Task };
 export type EditTaskPayload = { columnId: string; task: Task };
@@ -68,4 +72,5 @@ export type Action =
   | {
       type: "REORDER_TASKS";
       payload: ReorderTasksPayload;
-    };
+    }
+  | { type: "REORDER_COLUMNS"; payload: ReorderColumnPayload };

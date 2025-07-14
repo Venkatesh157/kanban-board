@@ -11,6 +11,8 @@ export const boardReducer = (state: BoardState, action: Action): BoardState => {
       return columnHandlers.handleRenameColumn(state, action.payload);
     case "REMOVE_COLUMN":
       return columnHandlers.handleRemoveColumn(state, action.payload);
+    case "REORDER_COLUMNS":
+      return columnHandlers.handleReorderColumns(state, action.payload);
     case "ADD_TASK":
       return taskHandlers.handleAddTask(state, action.payload);
     case "EDIT_TASK":
