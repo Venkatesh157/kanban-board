@@ -6,191 +6,191 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoardContext } from "@/context/BoardContext";
 import {
   Box,
-  Button,
   Flex,
+  IconButton,
   Input,
-  Stack,
   Text,
   Textarea,
+  VStack,
 } from "@chakra-ui/react";
+import { useColorModeValue } from "../ui/color-mode";
+import CommentSection from "../ui/CommentSection";
+import InlineEditor from "../ui/InlineEditor";
+import { FiEdit } from "react-icons/fi";
 
 type Props = {
-  mode: "add" | "edit" | "view";
+  mode: "add" | "edit" | "view" | "delete";
   columnId: string;
   task?: Task;
   triggerLabel: () => ReactNode;
 };
 
 const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
-  const isEdit = mode === "edit";
-  const isReadOnly = mode === "view";
   const { dispatch } = useBoardContext();
+  const isView = mode === "view";
+  const isAdd = mode === "add";
+  const isDelete = mode === "delete";
 
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
+  const [editTitle, setEditTitle] = useState(false);
+  const [editDescription, setEditDescription] = useState(false);
 
-  const [comment, setComment] = useState("");
-  const [editCommentId, setEditCommentId] = useState<string | null>(null);
-  const [editedCommentText, setEditedCommentText] = useState("");
+  const bgColor = useColorModeValue("white", "gray.800");
 
-  const handleSubmit = () => {
-    const newTaskId = uuidv4();
+  const handleAddTask = () => {
     if (!title.trim()) return;
-
     const newTask: Task = {
-      taskId: isEdit && task ? task.taskId : newTaskId,
+      taskId: uuidv4(),
       title,
       description,
-      comments: task?.comments || [],
+      comments: [],
     };
-
     dispatch({
-      type: isEdit ? "EDIT_TASK" : "ADD_TASK",
+      type: "ADD_TASK",
       payload: {
         columnId,
         task: newTask,
       },
     });
-
-    setTitle("");
-    setDescription("");
   };
 
-  const handleAddComment = () => {
-    if (!comment.trim() || !task) return;
-
+  const saveTitle = () => {
     dispatch({
-      type: "ADD_COMMENT",
+      type: "EDIT_TASK",
       payload: {
-        taskId: task.taskId,
-        comment,
+        columnId,
+        task: { ...task!, title },
       },
     });
-
-    setComment("");
+    setEditTitle(false);
   };
 
-  const handleEditComment = (commentId: string, text: string) => {
-    if (!task) return;
-
+  const saveDescription = () => {
     dispatch({
-      type: "EDIT_COMMENT",
+      type: "EDIT_TASK",
       payload: {
-        taskId: task.taskId,
-        commentId,
-        text,
+        columnId,
+        task: { ...task!, description },
       },
     });
+    setEditDescription(false);
+  };
 
-    setEditCommentId(null);
-    setEditedCommentText("");
+  const deleteTask = () => {
+    if (!task?.taskId) return;
+    dispatch({
+      type: "DELETE_TASK",
+      payload: {
+        columnId,
+        taskId: task?.taskId,
+      },
+    });
   };
 
   return (
     <BoardModal
       triggerLabel={triggerLabel}
-      title={isEdit ? "Edit Task" : "Add Task"}
-      onSubmit={handleSubmit}
+      title={isAdd ? "Add New Task" : "Task Details"}
+      onSubmit={isAdd ? handleAddTask : isDelete ? deleteTask : null}
     >
-      <Input
-        mb={4}
-        placeholder="Task title"
-        value={title}
-        readOnly={isReadOnly}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <Textarea
-        placeholder="Task description"
-        value={description}
-        readOnly={isReadOnly}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-
-      {(isEdit || isReadOnly) && task && (
-        <Box mt={6}>
-          <Text fontWeight="semibold" mb={2}>
-            Comments
-          </Text>
-          <Stack>
-            {task.comments.length === 0 && (
-              <Text fontSize="sm" color="gray.500">
-                No comments yet.
-              </Text>
-            )}
-
-            {task.comments.map((c) =>
-              editCommentId === c.commentId ? (
-                <Box key={c.commentId}>
-                  <Textarea
-                    size="sm"
-                    value={editedCommentText}
-                    onChange={(e) => setEditedCommentText(e.target.value)}
-                    mb={2}
+      <VStack gap={8} align="stretch" bg={bgColor}>
+        {isDelete ? (
+          <>
+            <Text>Are you sure you want to delete the task?</Text>
+          </>
+        ) : (
+          <Box>
+            <Flex justify="space-between" align="center"></Flex>
+            <Text fontSize="lg" fontWeight="bold">
+              {isAdd && (
+                <VStack gap={4} align="flex-start">
+                  <Text>Task Title</Text>
+                  <Input
+                    id="task-title"
+                    placeholder="Enter task title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    padding={2}
                   />
-                  <Button
-                    size="xs"
-                    colorScheme="green"
-                    mr={2}
-                    onClick={() =>
-                      handleEditComment(c.commentId, editedCommentText)
-                    }
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    size="xs"
-                    variant="ghost"
-                    onClick={() => {
-                      setEditCommentId(null);
-                      setEditedCommentText("");
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              ) : (
-                <Flex
-                  key={c.commentId}
-                  justify="space-between"
-                  align="center"
-                  bg="gray.100"
-                  p={2}
-                  borderRadius="md"
-                  fontSize="sm"
-                >
-                  <Text>{c.comment}</Text>
-                  {isEdit && (
-                    <Button
-                      size="xs"
-                      onClick={() => {
-                        setEditCommentId(c.commentId);
-                        setEditedCommentText(c.comment);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  )}
-                </Flex>
-              )
-            )}
-          </Stack>
+                  <Text>Task Description</Text>
+                  <Textarea
+                    id="task-description"
+                    placeholder="Enter task description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    padding={2}
+                  />
+                </VStack>
+              )}
+              {!isAdd && (
+                <>
+                  <Box>
+                    <Text fontSize="lg" fontWeight="bold">
+                      {editTitle ? (
+                        <InlineEditor
+                          value={title}
+                          onChange={setTitle}
+                          onSave={saveTitle}
+                          onCancel={() => setEditTitle(false)}
+                        />
+                      ) : (
+                        <>
+                          {title}
+                          {!isView && (
+                            <IconButton
+                              aria-label="Edit title"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setEditTitle(true)}
+                              ml={2}
+                            >
+                              <FiEdit />
+                            </IconButton>
+                          )}
+                        </>
+                      )}
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Flex align="center" justify="space-between">
+                      <Text fontWeight="semibold">Task Description</Text>
+                      {!editDescription && !isView && (
+                        <IconButton
+                          aria-label="Edit title"
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setEditDescription(true)}
+                          ml={2}
+                        >
+                          <FiEdit />
+                        </IconButton>
+                      )}
+                    </Flex>
+                    {editDescription ? (
+                      <InlineEditor
+                        value={description}
+                        onChange={setDescription}
+                        onSave={saveDescription}
+                        onCancel={() => setEditDescription(false)}
+                        isTextarea
+                      />
+                    ) : (
+                      <Text mt={2}>
+                        {description || "No description provided."}
+                      </Text>
+                    )}
+                  </Box>
+                </>
+              )}
+            </Text>
+          </Box>
+        )}
 
-          {isEdit && (
-            <>
-              {/* <Divider my={4} /> */}
-              <Textarea
-                placeholder="Add a comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                mb={2}
-              />
-              <Button size="sm" onClick={handleAddComment} colorScheme="blue">
-                Add Comment
-              </Button>
-            </>
-          )}
-        </Box>
-      )}
+        {!isAdd && !isDelete && task && (
+          <CommentSection task={task} isEditable={true} />
+        )}
+      </VStack>
     </BoardModal>
   );
 };

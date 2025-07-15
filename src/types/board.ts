@@ -1,6 +1,7 @@
 export interface Comment {
   commentId: string;
   comment: string;
+  replies?: Comment[];
 }
 
 export interface Task {
@@ -55,6 +56,12 @@ export type ReorderTasksPayload = {
   destinationIndex: number;
 };
 
+export type ReplyCommentPayload = {
+  taskId: string;
+  commentId: string;
+  replyText: string;
+};
+
 export type Action =
   | { type: "ADD_COLUMN"; payload: AddColumnPayload }
   | { type: "RENAME_COLUMN"; payload: RenameColumnPayload }
@@ -65,6 +72,7 @@ export type Action =
   | { type: "ADD_COMMENT"; payload: AddCommentPayload }
   | { type: "EDIT_COMMENT"; payload: EditCommentPayload }
   | { type: "DELETE_COMMENT"; payload: DeleteCommentPayload }
+  | { type: "ADD_REPLY"; payload: ReplyCommentPayload }
   | {
       type: "MOVE_TASK";
       payload: MoveTaskPayload;

@@ -60,15 +60,18 @@ const ColumnModal = ({
       onSubmit={handleSubmit}
     >
       {mode !== "delete" ? (
-        <Input
-          placeholder="Column name"
-          value={columnName}
-          onChange={(e) => setColumnName(e.target.value)}
-        />
+        <>
+          <Text mb="3">Column Name</Text>
+          <Input
+            placeholder="Column name"
+            value={columnName}
+            onChange={(e) => setColumnName(e.target.value)}
+          />
+        </>
       ) : (
         <Text>
           Are you sure you want to delete the column? All the tasks in the
-          column will be deleted
+          column will be deleted!
         </Text>
       )}
     </BoardModal>

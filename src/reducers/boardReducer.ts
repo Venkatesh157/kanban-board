@@ -29,6 +29,8 @@ export const boardReducer = (state: BoardState, action: Action): BoardState => {
       return commentHandlers.handleEditComment(state, action.payload);
     case "DELETE_COMMENT":
       return commentHandlers.handleDeleteComment(state, action.payload);
+    case "ADD_REPLY":
+      return commentHandlers.handleReplyComment(state, action.payload);
 
     default:
       return state;

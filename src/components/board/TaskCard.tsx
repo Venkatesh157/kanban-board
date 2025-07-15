@@ -3,11 +3,10 @@ import { Task } from "@/types/board";
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import React from "react";
 import TaskModal from "../modals/TaskModal";
-import { IoEyeSharp } from "react-icons/io5";
-import { FiEdit } from "react-icons/fi";
 import { Draggable } from "@hello-pangea/dnd";
 import { Tooltip } from "../ui/tooltip";
 import { useColorModeValue } from "../ui/color-mode";
+import { MdDelete, MdOpenInNew } from "react-icons/md";
 
 type Props = {
   task: Task;
@@ -40,32 +39,33 @@ const TaskCard = ({ task, columnId, index }: Props) => {
             <Flex gap={2}>
               <Tooltip content="View Task" aria-label="View Task">
                 <TaskModal
-                  mode="view"
+                  mode="edit"
                   task={task}
                   columnId={columnId}
                   triggerLabel={() => (
                     <IconButton
                       size="lg"
-                      aria-label="View Task"
+                      aria-label="Edit Task"
                       variant="ghost"
                     >
-                      <IoEyeSharp />
+                      <MdOpenInNew />
                     </IconButton>
                   )}
                 />
               </Tooltip>
-              <Tooltip content="Edit Task" aria-label="Edit Task">
+              <Tooltip content="Delete Task" aria-label="Delete Task">
                 <TaskModal
-                  mode="edit"
+                  mode="delete"
                   columnId={columnId}
                   task={task}
                   triggerLabel={() => (
                     <IconButton
-                      aria-label="Edit Task"
+                      aria-label="Delete Task"
                       variant="ghost"
                       size="sm"
+                      color="red"
                     >
-                      <FiEdit />
+                      <MdDelete />
                     </IconButton>
                   )}
                 />

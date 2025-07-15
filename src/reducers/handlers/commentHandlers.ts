@@ -3,6 +3,7 @@ import {
   BoardState,
   DeleteCommentPayload,
   EditCommentPayload,
+  ReplyCommentPayload,
 } from "@/types/board";
 import { v4 as uuidv4 } from "uuid";
 
@@ -76,4 +77,41 @@ const handleDeleteComment = (
   };
 };
 
-export { handleAddComment, handleEditComment, handleDeleteComment };
+const handleReplyComment = (
+  state: BoardState,
+  payload: ReplyCommentPayload
+) => {
+  const { taskId, commentId, replyText } = payload;
+  const task = state.tasks[taskId];
+  if (!task) return state;
+
+  const updatedComments = task.comments.map((comment) => {
+    if (comment.commentId !== commentId) return comment;
+
+    return {
+      ...comment,
+      replies: [
+        ...(comment.replies || []),
+        { commentId: uuidv4(), comment: replyText },
+      ],
+    };
+  });
+
+  return {
+    ...state,
+    tasks: {
+      ...state.tasks,
+      [taskId]: {
+        ...task,
+        comments: updatedComments,
+      },
+    },
+  };
+};
+
+export {
+  handleAddComment,
+  handleEditComment,
+  handleDeleteComment,
+  handleReplyComment,
+};
