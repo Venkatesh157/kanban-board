@@ -63,6 +63,7 @@ export type ReplyCommentPayload = {
 };
 
 export type Action =
+  | { type: "LOAD_STATE"; payload: BoardState }
   | { type: "ADD_COLUMN"; payload: AddColumnPayload }
   | { type: "RENAME_COLUMN"; payload: RenameColumnPayload }
   | { type: "REMOVE_COLUMN"; payload: RemoveColumnPayload }
