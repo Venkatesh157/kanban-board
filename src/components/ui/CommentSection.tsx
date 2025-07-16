@@ -1,4 +1,4 @@
-import { Task } from "@/types/board";
+import { Task, Comment } from "@/types/board";
 import {
   Box,
   Button,
@@ -8,7 +8,7 @@ import {
   Textarea,
   VisuallyHidden,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { useColorModeValue } from "./color-mode";
 import { useBoardContext } from "@/context/BoardContext";
 import InlineEditor from "./InlineEditor";
@@ -63,6 +63,126 @@ const CommentSection = ({ task, isEditable }: Props) => {
     setReplyText("");
   };
 
+  const handleDeleteComment = (commentId: string) => {
+    dispatch({
+      type: "DELETE_COMMENT",
+      payload: { taskId: task.taskId, commentId },
+    });
+  };
+
+  const renderComments = (comments: Comment[], level = 0): JSX.Element[] => {
+    return comments.map((comment) => (
+      <Box
+        key={comment.commentId}
+        bg={commentBg}
+        p={3}
+        borderRadius="md"
+        ml={level * 4}
+      >
+        {editingCommentId === comment.commentId ? (
+          <InlineEditor
+            value={editedText}
+            onChange={setEditedText}
+            onSave={() => handleEditComment(comment.commentId)}
+            onCancel={() => setEditingCommentId(null)}
+          />
+        ) : (
+          <>
+            <Flex justify="space-between" align="center">
+              <Box>
+                <Text fontSize="sm">{comment.comment}</Text>
+              </Box>
+
+              {isEditable && (
+                <Flex gap={2}>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => {
+                      setEditingCommentId(comment.commentId);
+                      setEditedText(comment.comment);
+                    }}
+                    aria-label="Edit comment"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => setReplyToId(comment.commentId)}
+                    aria-label="Reply to comment"
+                  >
+                    Reply
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    colorScheme="red"
+                    onClick={() => handleDeleteComment(comment.commentId)}
+                    aria-label="Delete comment"
+                    color="red"
+                  >
+                    Delete
+                  </Button>
+                </Flex>
+              )}
+            </Flex>
+            {replyToId === comment.commentId && (
+              <Box mt={2}>
+                <Textarea
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  size="sm"
+                  placeholder="Write a reply..."
+                  mb={2}
+                  aria-label="Reply input"
+                  padding={3}
+                />
+                <Flex gap={2}>
+                  <Button
+                    size="xs"
+                    colorScheme="blue"
+                    onClick={() => handleReply(comment.commentId)}
+                    aria-label="Submit reply"
+                    px={2}
+                  >
+                    Reply
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => {
+                      setEditingCommentId(comment.commentId);
+                      setEditedText(comment.comment);
+                    }}
+                    aria-label="Edit comment"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => {
+                      setReplyToId(null);
+                      setReplyText("");
+                    }}
+                    aria-label="Cancel reply"
+                    px={2}
+                  >
+                    Cancel
+                  </Button>
+                </Flex>
+              </Box>
+            )}
+          </>
+        )}
+        {comment.replies && comment.replies.length > 0 && (
+          <Box mt={2}>{renderComments(comment.replies, level + 1)}</Box>
+        )}
+      </Box>
+    ));
+  };
+
   return (
     <Box mt={6} role="region" aria-labelledby="comments-heading">
       <Text id="comments-headings" fontWeight="semibold" mb={3}>
@@ -74,97 +194,7 @@ const CommentSection = ({ task, isEditable }: Props) => {
             No comments yet
           </Text>
         ) : (
-          task.comments.map((comment) => (
-            <Box key={comment.commentId} bg={commentBg} p={3} borderRadius="md">
-              {editingCommentId === comment.commentId ? (
-                <InlineEditor
-                  value={editedText}
-                  onChange={setEditedText}
-                  onSave={() => handleEditComment(comment.commentId)}
-                  onCancel={() => setEditingCommentId(null)}
-                />
-              ) : (
-                <>
-                  <Flex justify="space-between" align="center">
-                    <Box>
-                      <Text fontSize="sm">{comment.comment}</Text>
-                    </Box>
-
-                    {isEditable && (
-                      <Flex gap={2}>
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onClick={() => {
-                            setEditingCommentId(comment.commentId);
-                            setEditedText(comment.comment);
-                          }}
-                          aria-label="Edit comment"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onClick={() => setReplyToId(comment.commentId)}
-                          aria-label="Reply to comment"
-                        >
-                          Reply
-                        </Button>
-                      </Flex>
-                    )}
-                  </Flex>
-                  {replyToId === comment.commentId && (
-                    <Box mt={2}>
-                      <Textarea
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        size="sm"
-                        placeholder="Write a reply..."
-                        mb={2}
-                        aria-label="Reply input"
-                        padding={3}
-                      />
-                      <Flex gap={2}>
-                        <Button
-                          size="xs"
-                          colorScheme="blue"
-                          onClick={() => handleReply(comment.commentId)}
-                          aria-label="Submit reply"
-                          px={2}
-                        >
-                          Reply
-                        </Button>
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onClick={() => {
-                            setEditingCommentId(comment.commentId);
-                            setEditedText(comment.comment);
-                          }}
-                          aria-label="Edit comment"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="xs"
-                          variant="ghost"
-                          onClick={() => {
-                            setReplyToId(null);
-                            setReplyText("");
-                          }}
-                          aria-label="Cancel reply"
-                          px={2}
-                        >
-                          Cancel
-                        </Button>
-                      </Flex>
-                    </Box>
-                  )}
-                </>
-              )}
-            </Box>
-          ))
+          renderComments(task.comments)
         )}
         {isEditable && (
           <Box mt={4}>
@@ -197,3 +227,212 @@ const CommentSection = ({ task, isEditable }: Props) => {
 };
 
 export default CommentSection;
+
+// task.comments.map((comment) => (
+//             <Box key={comment.commentId} bg={commentBg} p={3} borderRadius="md">
+//               {editingCommentId === comment.commentId ? (
+//                 <InlineEditor
+//                   value={editedText}
+//                   onChange={setEditedText}
+//                   onSave={() => handleEditComment(comment.commentId)}
+//                   onCancel={() => setEditingCommentId(null)}
+//                 />
+//               ) : (
+//                 <>
+//                   <Flex justify="space-between" align="center">
+//                     <Box>
+//                       <Text fontSize="sm">{comment.comment}</Text>
+//                     </Box>
+
+//                     {isEditable && (
+//                       <Flex gap={2}>
+//                         <Button
+//                           size="xs"
+//                           variant="ghost"
+//                           onClick={() => {
+//                             setEditingCommentId(comment.commentId);
+//                             setEditedText(comment.comment);
+//                           }}
+//                           aria-label="Edit comment"
+//                         >
+//                           Edit
+//                         </Button>
+//                         <Button
+//                           size="xs"
+//                           variant="ghost"
+//                           onClick={() => setReplyToId(comment.commentId)}
+//                           aria-label="Reply to comment"
+//                         >
+//                           Reply
+//                         </Button>
+//                         <Button
+//                           size="xs"
+//                           variant="ghost"
+//                           onClick={() => handleDeleteComment(comment.commentId)}
+//                           aria-label="Delete comment"
+//                         >
+//                           Delete
+//                         </Button>
+//                       </Flex>
+//                     )}
+//                   </Flex>
+//                   {replyToId === comment.commentId && (
+//                     <Box mt={2}>
+//                       <Textarea
+//                         value={replyText}
+//                         onChange={(e) => setReplyText(e.target.value)}
+//                         size="sm"
+//                         placeholder="Write a reply..."
+//                         mb={2}
+//                         aria-label="Reply input"
+//                         padding={3}
+//                       />
+//                       <Flex gap={2}>
+//                         <Button
+//                           size="xs"
+//                           colorScheme="blue"
+//                           onClick={() => handleReply(comment.commentId)}
+//                           aria-label="Submit reply"
+//                           px={2}
+//                         >
+//                           Reply
+//                         </Button>
+//                         <Button
+//                           size="xs"
+//                           variant="ghost"
+//                           onClick={() => {
+//                             setEditingCommentId(comment.commentId);
+//                             setEditedText(comment.comment);
+//                           }}
+//                           aria-label="Edit comment"
+//                         >
+//                           Edit
+//                         </Button>
+//                         <Button
+//                           size="xs"
+//                           variant="ghost"
+//                           onClick={() => {
+//                             setReplyToId(null);
+//                             setReplyText("");
+//                           }}
+//                           aria-label="Cancel reply"
+//                           px={2}
+//                         >
+//                           Cancel
+//                         </Button>
+//                       </Flex>
+//                     </Box>
+//                   )}
+//                 </>
+//               )}
+//               {comment.replies &&
+//                 comment.replies.map((reply) => (
+//                   <Box
+//                     key={reply.commentId}
+//                     bg={commentBg}
+//                     p={3}
+//                     borderRadius="md"
+//                     ml={6}
+//                     mt={2}
+//                   >
+//                     {editingCommentId === reply.commentId ? (
+//                       <InlineEditor
+//                         value={editedText}
+//                         onChange={setEditedText}
+//                         onSave={() => handleEditComment(reply.commentId)}
+//                         onCancel={() => setEditingCommentId(null)}
+//                       />
+//                     ) : (
+//                       <>
+//                         <Flex justify="space-between" align="center">
+//                           <Box>
+//                             <Text fontSize="sm">{reply.comment}</Text>
+//                           </Box>
+
+//                           {isEditable && (
+//                             <Flex gap={2}>
+//                               <Button
+//                                 size="xs"
+//                                 variant="ghost"
+//                                 onClick={() => {
+//                                   setEditingCommentId(reply.commentId);
+//                                   setEditedText(reply.comment);
+//                                 }}
+//                                 aria-label="Edit reply"
+//                               >
+//                                 Edit
+//                               </Button>
+//                               <Button
+//                                 size="xs"
+//                                 variant="ghost"
+//                                 onClick={() => setReplyToId(reply.commentId)}
+//                                 aria-label="Reply to reply"
+//                               >
+//                                 Reply
+//                               </Button>
+//                               <Button
+//                                 size="xs"
+//                                 variant="ghost"
+//                                 onClick={() =>
+//                                   handleDeleteComment(reply.commentId)
+//                                 }
+//                                 aria-label="Delete reply"
+//                               >
+//                                 Delete
+//                               </Button>
+//                             </Flex>
+//                           )}
+//                         </Flex>
+//                         {replyToId === reply.commentId && (
+//                           <Box mt={2}>
+//                             <Textarea
+//                               value={replyText}
+//                               onChange={(e) => setReplyText(e.target.value)}
+//                               size="sm"
+//                               placeholder="Write a reply..."
+//                               mb={2}
+//                               aria-label="Reply input"
+//                               padding={3}
+//                             />
+//                             <Flex gap={2}>
+//                               <Button
+//                                 size="xs"
+//                                 colorScheme="blue"
+//                                 onClick={() => handleReply(reply.commentId)}
+//                                 aria-label="Submit reply"
+//                                 px={2}
+//                               >
+//                                 Reply
+//                               </Button>
+//                               <Button
+//                                 size="xs"
+//                                 variant="ghost"
+//                                 onClick={() => {
+//                                   setEditingCommentId(reply.commentId);
+//                                   setEditedText(reply.comment);
+//                                 }}
+//                                 aria-label="Edit reply"
+//                               >
+//                                 Edit
+//                               </Button>
+//                               <Button
+//                                 size="xs"
+//                                 variant="ghost"
+//                                 onClick={() => {
+//                                   setReplyToId(null);
+//                                   setReplyText("");
+//                                 }}
+//                                 aria-label="Cancel reply"
+//                                 px={2}
+//                               >
+//                                 Cancel
+//                               </Button>
+//                             </Flex>
+//                           </Box>
+//                         )}
+//                       </>
+//                     )}
+//                   </Box>
+//                 ))}
+//             </Box>
+//           ))

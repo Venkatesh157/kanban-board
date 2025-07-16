@@ -4,8 +4,58 @@ import {
   DeleteCommentPayload,
   EditCommentPayload,
   ReplyCommentPayload,
+  Comment,
 } from "@/types/board";
 import { v4 as uuidv4 } from "uuid";
+
+const addReplyRecursive = (
+  comments: Comment[],
+  targetId: string,
+  reply: Comment
+): Comment[] => {
+  return comments.map((c) => {
+    if (c.commentId === targetId) {
+      return {
+        ...c,
+        replies: [...(c.replies || []), reply],
+      };
+    }
+    if (c.replies) {
+      return { ...c, replies: addReplyRecursive(c.replies, targetId, reply) };
+    }
+    return c;
+  });
+};
+
+const editCommentRecursive = (
+  comments: Comment[],
+  targetId: string,
+  text: string
+): Comment[] => {
+  return comments.map((c) => {
+    if (c.commentId === targetId) {
+      return { ...c, comment: text };
+    }
+    if (c.replies) {
+      return { ...c, replies: editCommentRecursive(c.replies, targetId, text) };
+    }
+    return c;
+  });
+};
+
+const deleteCommentRecursive = (
+  comments: Comment[],
+  targetId: string
+): Comment[] => {
+  return comments.reduce<Comment[]>((acc, c) => {
+    if (c.commentId === targetId) return acc;
+    const updatedReplies = c.replies
+      ? deleteCommentRecursive(c.replies, targetId)
+      : c.replies;
+    acc.push({ ...c, replies: updatedReplies });
+    return acc;
+  }, []);
+};
 
 const handleAddComment = (
   state: BoardState,
@@ -14,7 +64,7 @@ const handleAddComment = (
   const { taskId, comment } = payload;
   const task = state.tasks[taskId];
 
-  if (!taskId) return state;
+  if (!task) return state;
 
   const newComment = { commentId: uuidv4(), comment };
 
@@ -35,9 +85,7 @@ const handleEditComment = (state: BoardState, payload: EditCommentPayload) => {
   const task = state.tasks[taskId];
   if (!task) return state;
 
-  const updatedComments = task.comments.map((comment) =>
-    comment.commentId === commentId ? { ...comment, comment: text } : comment
-  );
+  const updatedComments = editCommentRecursive(task.comments, commentId, text);
 
   return {
     ...state,
@@ -61,9 +109,7 @@ const handleDeleteComment = (
 
   if (!task) return state;
 
-  const filteredComments = task.comments.filter(
-    (comment) => comment.commentId !== commentId
-  );
+  const filteredComments = deleteCommentRecursive(task.comments, commentId);
 
   return {
     ...state,
@@ -85,17 +131,8 @@ const handleReplyComment = (
   const task = state.tasks[taskId];
   if (!task) return state;
 
-  const updatedComments = task.comments.map((comment) => {
-    if (comment.commentId !== commentId) return comment;
-
-    return {
-      ...comment,
-      replies: [
-        ...(comment.replies || []),
-        { commentId: uuidv4(), comment: replyText },
-      ],
-    };
-  });
+  const reply = { commentId: uuidv4(), comment: replyText };
+  const updatedComments = addReplyRecursive(task.comments, commentId, reply);
 
   return {
     ...state,
