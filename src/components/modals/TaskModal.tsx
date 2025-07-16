@@ -37,6 +37,7 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
   const [editDescription, setEditDescription] = useState(false);
 
   const bgColor = useColorModeValue("white", "gray.800");
+  const descriptionBg = useColorModeValue("gray.100", "gray.700");
 
   const handleAddTask = () => {
     if (!title.trim()) return;
@@ -102,10 +103,10 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
         ) : (
           <Box>
             <Flex justify="space-between" align="center"></Flex>
-            <Box fontSize="lg" fontWeight="bold">
+            <Box fontSize="lg">
               {isAdd && (
                 <VStack gap={4} align="flex-start">
-                  <Text>Task Title</Text>
+                  <Text fontWeight="bold">Task Title</Text>
                   <Input
                     id="task-title"
                     placeholder="Enter task title"
@@ -113,7 +114,7 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
                     onChange={(e) => setTitle(e.target.value)}
                     padding={2}
                   />
-                  <Text>Task Description</Text>
+                  <Text my={2}>Task Description</Text>
                   <Textarea
                     id="task-description"
                     placeholder="Enter task description"
@@ -134,25 +135,34 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
                         onCancel={() => setEditTitle(false)}
                       />
                     ) : (
-                      <>
-                        <Text>{title}</Text>
-                        {!isView && (
-                          <IconButton
-                            aria-label="Edit title"
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => setEditTitle(true)}
-                            ml={2}
-                          >
-                            <FiEdit />
-                          </IconButton>
-                        )}
-                      </>
+                      <VStack align="flex-start">
+                        <Text fontWeight="semibold" textStyle="label">
+                          Task Title
+                        </Text>
+                        <Flex align="center">
+                          <Text textStyle="lg" fontWeight="bold">
+                            {title}
+                          </Text>
+                          {!isView && (
+                            <IconButton
+                              aria-label="Edit title"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setEditTitle(true)}
+                              ml={2}
+                            >
+                              <FiEdit />
+                            </IconButton>
+                          )}
+                        </Flex>
+                      </VStack>
                     )}
                   </Box>
                   <Box>
-                    <Flex align="center" justify="space-between">
-                      <Text fontWeight="semibold">Task Description</Text>
+                    <Flex align="center" justify="flex-start">
+                      <Text fontWeight="semibold" textStyle="label">
+                        Task Description
+                      </Text>
                       {!editDescription && !isView && (
                         <IconButton
                           aria-label="Edit title"
@@ -174,9 +184,11 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
                         isTextarea
                       />
                     ) : (
-                      <Text mt={2}>
-                        {description || "No description provided."}
-                      </Text>
+                      <Box bg={descriptionBg} minH={50} p={4}>
+                        <Text mt={2} textStyle="md">
+                          {description || "No description provided."}
+                        </Text>
+                      </Box>
                     )}
                   </Box>
                 </>

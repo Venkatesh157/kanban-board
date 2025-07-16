@@ -54,7 +54,7 @@ const Column = ({ column, tasks }: Props) => {
       borderColor={borderColor}
       p={4}
       shadow="md"
-      minH="600px"
+      h="600px"
       role="region"
       aria-labelledby={`column-${column.columnId}`}
       _focus={{

@@ -17,7 +17,7 @@ const InlineEditor = ({
   isTextarea,
 }: Props) => {
   return (
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={2} mb={4}>
       {isTextarea ? (
         <Textarea
           value={value}
@@ -26,6 +26,7 @@ const InlineEditor = ({
           p={2}
           autoFocus
           aria-label="Edit content"
+          my={2}
         />
       ) : (
         <Input
