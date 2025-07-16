@@ -139,6 +139,17 @@ const CommentSection = ({ task, isEditable }: Props) => {
                           size="xs"
                           variant="ghost"
                           onClick={() => {
+                            setEditingCommentId(comment.commentId);
+                            setEditedText(comment.comment);
+                          }}
+                          aria-label="Edit comment"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => {
                             setReplyToId(null);
                             setReplyText("");
                           }}
