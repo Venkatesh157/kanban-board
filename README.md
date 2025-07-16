@@ -73,7 +73,7 @@ To ensure compatibility **with Next.js SSR**:
 
 **Example: `SSR_STRATEGY`**
 
-````ts
+`````ts
 const [isClient, setIsClient] = useState(false);
 
 useEffect(() => setIsClient(true), []);
@@ -82,7 +82,7 @@ const [state, dispatch] = useReducer(
   boardReducer,
   undefined,
   () => (isClient ? loadInitialState() : getInitialBoardState())
-);
+);````
 
 
 ## ⚙️ State Management
@@ -160,4 +160,5 @@ All board changes are saved to localStorage:
 localStorage.setItem("kanban-board-state", JSON.stringify(state));
 This allows for offline use, while preparing for future sync to a backend service.``
 
-````
+
+`````
