@@ -47,22 +47,24 @@ This is a **fully functional Kanban board** application built using modern React
 
 ## 🧱 Architecture
 
-src/
-├── components/
-│ ├── board/ # Board layout & logic
-│ ├── modals/ # Reusable modals for Task/Column CRUD
-│ ├── ui/ # Shared components (Tooltip, CommentSection)
-│ └── context/ # BoardContext with reducer/state management
-├── reducers/
-│ ├── boardReducer.ts # Root reducer
-│ ├── handlers/
-│ │ ├── taskHandlers.ts
-│ │ ├── columnHandlers.ts
-│ │ └── commentHandlers.ts
-├── types/
-│ └── board.ts # Task, Column, Action types
-├── constants/
-│ └── initialBoard.ts # Default board state
+```
+    src/
+    ├── components/
+    │ ├── board/ # Board layout & logic
+    │ ├── modals/ # Reusable modals for Task/Column CRUD
+    │ ├── ui/ # Shared components (Tooltip, CommentSection)
+    │ └── context/ # BoardContext with reducer/state management
+    ├── reducers/
+    │ ├── boardReducer.ts # Root reducer
+    │ ├── handlers/
+    │ │ ├── taskHandlers.ts
+    │ │ ├── columnHandlers.ts
+    │ │ └── commentHandlers.ts
+    ├── types/
+    │ └── board.ts # Task, Column, Action types
+    ├── constants/
+    │ └── initialBoard.ts # Default board state
+```
 
 ## 🌐 SSR / Hydration Safety
 
