@@ -22,7 +22,11 @@ const LOCAL_STORAGE_KEY = "kanban-board-state";
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
 
 export const BoardProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(boardReducer, getInitialBoardState());
+  const [state, dispatch] = useReducer(
+    boardReducer,
+    undefined,
+    getInitialBoardState
+  );
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage on mount
@@ -41,7 +45,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setIsHydrated(true);
-  }, [state]);
+  }, []);
 
   // Persist to localStorage when state changes
   useEffect(() => {

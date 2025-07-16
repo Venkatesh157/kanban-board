@@ -102,7 +102,7 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
         ) : (
           <Box>
             <Flex justify="space-between" align="center"></Flex>
-            <Text fontSize="lg" fontWeight="bold">
+            <Box fontSize="lg" fontWeight="bold">
               {isAdd && (
                 <VStack gap={4} align="flex-start">
                   <Text>Task Title</Text>
@@ -126,31 +126,29 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
               {!isAdd && (
                 <>
                   <Box>
-                    <Text fontSize="lg" fontWeight="bold">
-                      {editTitle ? (
-                        <InlineEditor
-                          value={title}
-                          onChange={setTitle}
-                          onSave={saveTitle}
-                          onCancel={() => setEditTitle(false)}
-                        />
-                      ) : (
-                        <>
-                          {title}
-                          {!isView && (
-                            <IconButton
-                              aria-label="Edit title"
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => setEditTitle(true)}
-                              ml={2}
-                            >
-                              <FiEdit />
-                            </IconButton>
-                          )}
-                        </>
-                      )}
-                    </Text>
+                    {editTitle ? (
+                      <InlineEditor
+                        value={title}
+                        onChange={setTitle}
+                        onSave={saveTitle}
+                        onCancel={() => setEditTitle(false)}
+                      />
+                    ) : (
+                      <>
+                        <Text>{title}</Text>
+                        {!isView && (
+                          <IconButton
+                            aria-label="Edit title"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setEditTitle(true)}
+                            ml={2}
+                          >
+                            <FiEdit />
+                          </IconButton>
+                        )}
+                      </>
+                    )}
                   </Box>
                   <Box>
                     <Flex align="center" justify="space-between">
@@ -183,7 +181,7 @@ const TaskModal = ({ mode, columnId, task, triggerLabel }: Props) => {
                   </Box>
                 </>
               )}
-            </Text>
+            </Box>
           </Box>
         )}
 

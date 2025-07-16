@@ -56,7 +56,7 @@ describe("taskHandlers", () => {
   it("should move a task between columns", () => {
     const newState = handleMoveTask(baseBoardState, {
       fromColumnId: "col-1",
-      toColumId: "col-2",
+      toColumnId: "col-2",
       taskId: "task-1",
       destinationIndex: 1,
     });

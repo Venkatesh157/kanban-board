@@ -102,7 +102,7 @@ const Column = ({ column, tasks }: Props) => {
             <ColumnModal
               mode="rename"
               columnId={column.columnId}
-              intialName={column.name}
+              initialName={column.name}
               triggerLabel={() => {
                 return (
                   <IconButton
@@ -121,7 +121,7 @@ const Column = ({ column, tasks }: Props) => {
             <ColumnModal
               mode="delete"
               columnId={column.columnId}
-              intialName={column.name}
+              initialName={column.name}
               triggerLabel={() => {
                 return (
                   <IconButton

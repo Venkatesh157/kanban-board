@@ -7,17 +7,17 @@ import { v4 as uuidv4 } from "uuid";
 type Props = {
   mode: "add" | "rename" | "delete";
   columnId?: string;
-  intialName?: string;
+  initialName?: string;
   triggerLabel: () => ReactNode;
 };
 
 const ColumnModal = ({
   mode,
   columnId,
-  intialName = "",
+  initialName = "",
   triggerLabel,
 }: Props) => {
-  const [columnName, setColumnName] = useState(intialName);
+  const [columnName, setColumnName] = useState(initialName);
   const { dispatch } = useBoardContext();
 
   const handleSubmit = () => {
