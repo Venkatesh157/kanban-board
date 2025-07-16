@@ -66,6 +66,7 @@ const ColumnModal = ({
             placeholder="Column name"
             value={columnName}
             onChange={(e) => setColumnName(e.target.value)}
+            padding={2}
           />
         </>
       ) : (

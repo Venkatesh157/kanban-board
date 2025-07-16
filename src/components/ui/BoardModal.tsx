@@ -58,7 +58,7 @@ const BoardModal = forwardRef<BoardModalRef, Props>(
               <Dialog.Body pb="4">{children}</Dialog.Body>
               {!onSubmit ? null : (
                 <Dialog.Footer>
-                  <Button variant="ghost" onClick={onClose} mr={3}>
+                  <Button variant="ghost" onClick={onClose} mr={3} padding={3}>
                     Cancel
                   </Button>
                   <Button
@@ -67,6 +67,7 @@ const BoardModal = forwardRef<BoardModalRef, Props>(
                       onSubmit();
                       onClose();
                     }}
+                    padding={3}
                   >
                     Save
                   </Button>
