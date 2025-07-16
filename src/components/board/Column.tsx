@@ -16,7 +16,7 @@ import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { useBoardContext } from "@/context/BoardContext";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../ui/colorMode";
 import { Tooltip } from "../ui/tooltip";
 
 type Props = {

@@ -5,7 +5,7 @@ import React from "react";
 import TaskModal from "../modals/TaskModal";
 import { Draggable } from "@hello-pangea/dnd";
 import { Tooltip } from "../ui/tooltip";
-import { useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../ui/colorMode";
 import { MdDelete, MdOpenInNew } from "react-icons/md";
 
 type Props = {

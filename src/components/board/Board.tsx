@@ -14,7 +14,7 @@ import React from "react";
 import Column from "./Column";
 import ColumnModal from "../modals/ColumnModal";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
-import { ColorModeButton } from "../ui/color-mode";
+import { ColorModeButton } from "../ui/colorMode";
 
 function Board() {
   const { state, dispatch } = useBoardContext();

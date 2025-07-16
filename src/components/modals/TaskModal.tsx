@@ -13,7 +13,7 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../ui/colorMode";
 import CommentSection from "../ui/CommentSection";
 import InlineEditor from "../ui/InlineEditor";
 import { FiEdit } from "react-icons/fi";

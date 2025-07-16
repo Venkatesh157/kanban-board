@@ -9,7 +9,7 @@ import {
   VisuallyHidden,
 } from "@chakra-ui/react";
 import { JSX, useState } from "react";
-import { useColorModeValue } from "./color-mode";
+import { useColorModeValue } from "./colorMode";
 import { useBoardContext } from "@/context/BoardContext";
 import InlineEditor from "./InlineEditor";
 
