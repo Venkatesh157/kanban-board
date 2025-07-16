@@ -54,7 +54,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
     } catch (err) {
-      console.warn("Failed to save board state to localStorage:", err);
+      console.warn("Failed to load board state", err);
     }
   }, [state, isHydrated]);
 

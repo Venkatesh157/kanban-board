@@ -1,5 +1,6 @@
-<h1>🧠 Kanban Board</h1>
-<p><strong>Modern, accessible, and extensible Kanban board built with React, Chakra UI, and Next.js</strong></p>
+# 🧠 Kanban Board
+
+Modern, accessible, and extensible Kanban board built with React, Chakra UI, and Next.js
 
 ## 🧩 Overview
 
@@ -41,7 +42,7 @@ This is a **fully functional Kanban board** application built using modern React
 
 ## 📸 Preview
 
-![Kanban Screenshot](https://)
+![Kanban Preview Link](https://kanban-board-pi-gray.vercel.app/)
 
 ---
 
@@ -159,6 +160,7 @@ All board changes are saved to localStorage:
 ```ts
 
 localStorage.setItem("kanban-board-state", JSON.stringify(state));
+
 This allows for offline use, while preparing for future sync to a backend service.
 ```
 
