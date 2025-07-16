@@ -42,7 +42,7 @@ This is a **fully functional Kanban board** application built using modern React
 
 ## 📸 Preview
 
-![Kanban Preview Link](https://kanban-board-pi-gray.vercel.app/)
+https://kanban-board-pi-gray.vercel.app/
 
 ---
 
