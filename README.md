@@ -73,7 +73,7 @@ To ensure compatibility **with Next.js SSR**:
 
 **Example: `SSR_STRATEGY`**
 
-`````ts
+```
 const [isClient, setIsClient] = useState(false);
 
 useEffect(() => setIsClient(true), []);
@@ -82,8 +82,8 @@ const [state, dispatch] = useReducer(
   boardReducer,
   undefined,
   () => (isClient ? loadInitialState() : getInitialBoardState())
-);````
-
+);
+```
 
 ## ⚙️ State Management
 
@@ -91,15 +91,15 @@ The application uses a **typed reducer-based state architecture**, where each ac
 
 **Example: `EDIT_TASK`**
 
-```ts
+```
 dispatch({
   type: "EDIT_TASK",
   payload: {
     columnId,
     task: { ...task, title: newTitle },
   },
-});```
-
+});
+```
 
 ## 🧑‍🦽 Accessibility
 
@@ -128,37 +128,38 @@ Strict ESLint rules enforced via Next.js defaults
 Reusable logic is extracted into composable functions/hooks
 
 Example Usage
+
 ```ts
 <TaskModal
   mode="edit"
   task={task}
   columnId={columnId}
   triggerLabel={() => (
-    <IconButton
-      aria-label="Edit Task"
-      variant="ghost"
-    >
-     <MdEdit />
+    <IconButton aria-label="Edit Task" variant="ghost">
+      <MdEdit />
     </IconButton>
   )}
-/>```
+/>
+```
 
 ## 🧪 Testing (Recommended)
 
 Unit testing: Jest with @testing-library/react
 
- ```ts
-npm run test```
-
+```ts
+npm run test
+```
 
 ## 📁 Persistent State
 
 All board changes are saved to localStorage:
 
-``ts
+```ts
 
 localStorage.setItem("kanban-board-state", JSON.stringify(state));
-This allows for offline use, while preparing for future sync to a backend service.``
+This allows for offline use, while preparing for future sync to a backend service.
+```
 
+```
 
-`````
+```
